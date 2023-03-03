@@ -1,0 +1,44 @@
+body{
+    background-color: rgb(245, 238, 169);
+    display: grid;
+}
+
+#show-recipes{
+    display: grid;
+    grid-template-columns: auto auto;
+    margin-left: inherit;
+}
+
+#box{
+    width: 300px;
+  border: 15px groove;
+  padding: 50px;
+  margin: 20px;
+  box-shadow: 5px 10px 18px rgb(99, 79, 79);
+  /* grid-template-columns: auto auto auto; */
+  /* grid-template-areas: "r r r"; */
+}
+
+img{
+    width: 100px;
+    height: 100px;
+    text-align: center;
+}
+
+li{
+    font-size:  13px;
+}
+
+#ingredient{
+    width: 200px
+}
+
+a{
+    text-align: center;
+    font-size: 20px;
+    font-family: cursive;
+}
+input{
+    margin-top: 15px;
+    box-shadow: 5px 10px 10px rgb(99, 79, 79);;
+}

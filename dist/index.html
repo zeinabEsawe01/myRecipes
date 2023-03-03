@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.4/handlebars.js"></script>
+</head>
+<body>
+    <div id="container">
+      <fieldset style="height: 50px;">
+        <input type="text" id="ingredient" placeholder="Search for recipes" />
+        <button onclick=Search()>Search</button>
+      </fieldset>
+        <fieldset>
+            <legend>Did you have a Sensitivity</legend>
+            <div>
+              <input type="checkbox" id="gluten" name="interest" value="gluten" />
+              <label>Gluten </label>
+            </div>
+            <div>
+              <input type="checkbox" id="diary" name="interest" value="diary" />
+              <label>Dairy</label>
+            </div>
+          </fieldset>
+    </div>
+
+    <div id="show-recipes"></div>
+
+    <script id="recipe-template" type="text/x-handlebars-template">
+        {{#each this}}
+        <div id="box">
+            <a href="{{href}}">{{title}}</a><br />
+            <br>
+            <img class="picture"  data-id="{{idMeal}}"  src="{{thumbnail}}"  />
+          <div id="ingredient">
+          <P>ingredients</P>
+          {{#each ingredient}}
+            <li>{{this}}</li>
+          {{/each}}
+        </div>
+        </div>
+        {{/each}}
+    </script>
+
+    
+<script src="main.js"></script>
+</body>
+</html>
