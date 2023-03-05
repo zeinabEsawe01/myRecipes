@@ -1,9 +1,10 @@
 
+index=0
 const  Search = function(){
     let ingredient = $("#ingredient").val()
 
     if ($("#diary").prop("checked") && !$("#gluten").prop("checked")) {
-        $.get(`/diary/${ingredient}`).then((loadedData) => {
+        $.get(`/diary/${ingredient}&${index}`).then((loadedData) => {
           let data = loadData(loadedData);
           render(data);
           console.log("diary server");
@@ -24,12 +25,15 @@ const  Search = function(){
             });
         }
         else {
-            $.get(`/Recipes/${ingredient}`).then((loadedData) => {
+            $.get(`/Recipes/${ingredient}?index=${index}`).then((loadedData) => {
               let data = loadData(loadedData);
+              let navigate = navigation()
               render(data);
+              renderNavigation(navigate);
               console.log("recipes server");
             });
           }
+             
 }
 
 const loadData = function(loadData){
@@ -47,6 +51,31 @@ const loadData = function(loadData){
         }
         return myRecipes
 }
+
+
+    const pagination = function(num){
+      index = (num *4) - 4
+      return index;
+    }
+
+    const navigation = function(){
+      let ingredient = $("#ingredient").val()
+      $.get(`/recipesLength/${ingredient}`).then((recipesLength) => {
+      let navigationArr = []
+      let len = recipesLength.length;
+      let naviNum = 1
+      while(len >= 4){
+        navigationArr.push(naviNum++) 
+        len = len - 4;
+      }
+      if(len > 0){
+        navigationArr.push(naviNum)
+      }
+      return navigationArr
+    });
+      
+      }
+
     const render = function(recipes){
         const source = $("#recipe-template").html()
         const template = Handlebars.compile(source)
@@ -55,6 +84,19 @@ const loadData = function(loadData){
         $("#show-recipes").empty().append(newHtml)
     }
 
+    const renderNavigation = function(navigation){
+      const source = $("#navigation-template").html()
+        const template = Handlebars.compile(source)
+        $("#show-navigation").empty()
+        let newHtml = template({navigation})
+        $("#show-navigation").empty().append(newHtml)
+    }
+
+    $("#show-navigation").on("click", "button", function(){
+      let value = ($(this)).data().id;
+      pagination(value)
+    })
+  
 
 $("#show-recipes").on('click', ".picture",  function() {
     //  ret = DetailsView.GetProject($(this).attr("#data-id"), OnComplete, OnTimeOut, OnError);

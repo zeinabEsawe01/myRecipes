@@ -3,12 +3,29 @@ const router = express.Router()
 const axios = require('axios')
 
 
-router.get('/Recipes/:ingredient', (req, res) => {
-    let ingredient = req.params.ingredient
+router.get('/recipesLength/:ingredient', (req, res) => {
+
     axios
         .get(`https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`)
             .then(results => {    
-                res.send(results.data.results)
+              let recipes = results.data.results;
+                res.send({length: recipes.length});
+    }
+)
+
+})
+  
+
+router.get('/Recipes/:ingredient', (req, res) => {
+  const ingredient = req.params.ingredient;
+  const index = req.query.index;
+  console.log(ingredient + " " + index);
+
+    axios
+        .get(`https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`)
+            .then(results => {    
+              let recipes = results.data.results;
+                res.send(recipes.splice(index, 4));
     }
 )
 
@@ -41,6 +58,7 @@ router.get("/diary/:ingredient", (req, res) => {
       .then((result) => {
         recipes = result.data.results;
       let recipesWithOutDairy = filterRecipes(recipes, dairyIngredients);
+      console.log(recipesWithOutDairy.length);
         res.send(recipesWithOutDairy);
       });
   
@@ -109,6 +127,8 @@ router.get("/diary/:ingredient", (req, res) => {
         return recipesWithOutSensetive
 
   }
+
+
 
 
 module.exports = router

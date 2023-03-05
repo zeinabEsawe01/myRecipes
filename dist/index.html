@@ -31,6 +31,7 @@
     </div>
 
     <div id="show-recipes"></div>
+    <div id="show-navigation"></div>
 
     <script id="recipe-template" type="text/x-handlebars-template">
         {{#each this}}
@@ -46,6 +47,14 @@
         </div>
         </div>
         {{/each}}
+    </script>
+
+    <script id="navigation-template"  type="text/x-handlebars-template">
+        {{#each navigation}}
+        <button data-id="{{this}}">{{this}}</button>
+        <br>
+        {{/each}}
+      <p>{{navigation}}</p>
     </script>
 
     
