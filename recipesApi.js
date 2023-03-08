@@ -3,33 +3,47 @@ const router = express.Router()
 const axios = require('axios')
 
 
-router.get('/recipesLength/:ingredient', (req, res) => {
+dairyIngredients = ["Cream","Cheese","Milk","Butter","Creme","Ricotta","Mozzarella","Custard","Cream Cheese"]
+glutenIngredients = ["Flour","Bread","spaghetti","Biscuits","Beer"]
 
-    axios
-        .get(`https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`)
-            .then(results => {    
-              let recipes = results.data.results;
-                res.send({length: recipes.length});
-    }
-)
-
-})
-  
 
 router.get('/Recipes/:ingredient', (req, res) => {
   const ingredient = req.params.ingredient;
+  const diary = req.query.diary;
+  const gluten = req.query.gluten;
   const index = req.query.index;
-  console.log(ingredient + " " + index);
 
-    axios
-        .get(`https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`)
-            .then(results => {    
-              let recipes = results.data.results;
-                res.send(recipes.splice(index, 4));
-    }
-)
+  axios
+      .get(
+        `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`
+      )
+      .then((result) => {
+        recipes = result.data.results;
+        if(diary && gluten){
+          let concatSensitive = dairyIngredients.concat(glutenIngredients);
+          let recipesWithOutGlutenDiary = filterRecipes(recipes, concatSensitive);
+          res.send(recipesWithOutGlutenDiary);
+        }
+        else if(diary){
+          let recipesWithOutDairy = filterRecipes(recipes, dairyIngredients);
+          res.send(recipesWithOutDairy);
+        }
+        else if(gluten){
+          let recipesWithOutGluten = filterRecipes(recipes, glutenIngredients);
+          res.send(recipesWithOutGluten);
+        }
+        else{
+          res.send(recipes);
+        }
+      });
+  
 
+  console.log( ingredient + " " + diary + " " + gluten + " " );
+
+  
 })
+
+
 
 router.get("/singleRecipe/:idMeal", (req, res) => {
   const idMeal = req.params.idMeal;
@@ -45,58 +59,6 @@ router.get("/singleRecipe/:idMeal", (req, res) => {
   res.status(200);
 });
 
-dairyIngredients = ["Cream","Cheese","Milk","Butter","Creme","Ricotta","Mozzarella","Custard","Cream Cheese"]
-glutenIngredients = ["Flour","Bread","spaghetti","Biscuits","Beer"]
-
-router.get("/diary/:ingredient", (req, res) => {
-    const ingredient = req.params.ingredient;
-  
-    axios
-      .get(
-        `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`
-      )
-      .then((result) => {
-        recipes = result.data.results;
-      let recipesWithOutDairy = filterRecipes(recipes, dairyIngredients);
-      console.log(recipesWithOutDairy.length);
-        res.send(recipesWithOutDairy);
-      });
-  
-    res.status(200);
-  });
-  
-  router.get("/gluten/:ingredient", (req, res) => {
-    const ingredient = req.params.ingredient;
-    axios
-      .get(
-        `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`
-      )
-      .then((result) => {
-        recipes = result.data.results;
-        let recipesWithOutGluten = filterRecipes(recipes, glutenIngredients);
-        res.send(recipesWithOutGluten);
-      });
-  
-    res.status(200);
-  });
-
-  router.get("/DiaryGluten/:ingredient", (req, res) => {
-    const ingredient = req.params.ingredient;
-  
-    axios
-      .get(
-        `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`
-      )
-      .then((result) => {
-        recipes = result.data.results;
-        let concatSensitive = dairyIngredients.concat(glutenIngredients);
-        let recipesWithOutGlutenDiary = filterRecipes(recipes, concatSensitive);
-       
-        res.send(recipesWithOutGlutenDiary);
-      });
-  
-    res.status(200);
-  });
 
   function filterRecipes(recipes, sensetive) {
 

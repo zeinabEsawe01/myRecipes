@@ -1,33 +1,40 @@
 
-index=0
+
 const  Search = function(){
     let ingredient = $("#ingredient").val()
 
+
     if ($("#diary").prop("checked") && !$("#gluten").prop("checked")) {
-        $.get(`/diary/${ingredient}&${index}`).then((loadedData) => {
+        $.get(`/Recipes/${ingredient}?diary=true`).then((loadedData) => {
           let data = loadData(loadedData);
+          let navigate = navigation(data)
           render(data);
+          renderNavigation(navigate);
           console.log("diary server");
         })
     }
         else if ($("#gluten").prop("checked") && !$("#diary").prop("checked")) {
-            $.get(`/gluten/${ingredient}`).then((loadedData) => {
+            $.get(`/gluten/${ingredient}?gluten=true&&startIndex=${startIndex}`).then((loadedData) => {
               let data = loadData(loadedData);
+              let navigate = navigation(data)
               render(data);
+              renderNavigation(navigate);
               console.log("glutin server");
             });
         }
         else if ($("#gluten").prop("checked") && $("#diary").prop("checked")) {
-            $.get(`/DiaryGluten/${ingredient}`).then((loadedData) => {
+            $.get(`/DiaryGluten/${ingredient}?diary=true&gluten=true`).then((loadedData) => {
               let data = loadData(loadedData);
+              let navigate = navigation(data)
               render(data);
+              renderNavigation(navigate);
               console.log("glutin and diary server");
             });
         }
         else {
-            $.get(`/Recipes/${ingredient}?index=${index}`).then((loadedData) => {
+            $.get(`/Recipes/${ingredient}`).then((loadedData) => {
               let data = loadData(loadedData);
-              let navigate = navigation()
+              let navigate = navigation(data)
               render(data);
               renderNavigation(navigate);
               console.log("recipes server");
@@ -55,14 +62,12 @@ const loadData = function(loadData){
 
     const pagination = function(num){
       index = (num *4) - 4
-      return index;
+      console.log(index);
     }
 
-    const navigation = function(){
-      let ingredient = $("#ingredient").val()
-      $.get(`/recipesLength/${ingredient}`).then((recipesLength) => {
+    const navigation = function(recipes){
       let navigationArr = []
-      let len = recipesLength.length;
+      let len = recipes.length;
       let naviNum = 1
       while(len >= 4){
         navigationArr.push(naviNum++) 
@@ -71,26 +76,11 @@ const loadData = function(loadData){
       if(len > 0){
         navigationArr.push(naviNum)
       }
+      console.log(navigationArr);
       return navigationArr
-    });
-      
+    
       }
 
-    const render = function(recipes){
-        const source = $("#recipe-template").html()
-        const template = Handlebars.compile(source)
-        $("#show-recipes").empty()
-        let newHtml = template(recipes)
-        $("#show-recipes").empty().append(newHtml)
-    }
-
-    const renderNavigation = function(navigation){
-      const source = $("#navigation-template").html()
-        const template = Handlebars.compile(source)
-        $("#show-navigation").empty()
-        let newHtml = template({navigation})
-        $("#show-navigation").empty().append(newHtml)
-    }
 
     $("#show-navigation").on("click", "button", function(){
       let value = ($(this)).data().id;
@@ -106,10 +96,3 @@ $("#show-recipes").on('click', ".picture",  function() {
       });
   });
 
-//   const  checkbox = function(){
-//     let sensetive = $('input[name="interest"]:checked').serialize();
-//     console.log(sensetive);
-//     // $.get(`/Recipes/${ingredient}`)
-//     // .then(data => {
-//   }
-//   checkbox()
