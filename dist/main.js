@@ -3,11 +3,12 @@ const itemsPerPage = 4;
 
 const  Search = function(startindex=0){
     let ingredient = $("#ingredient").val()
+    console.log(startindex);
 
     if ($("#diary").prop("checked") && !$("#gluten").prop("checked")) {
         $.get(`/Recipes/${ingredient}?diary=true&startindex=${startindex}`).then((loadedData) => {
-          let data = loadData(loadedData);
-          let navigate = navigation(data)
+          let data = loadData(loadedData.recipes);
+          let navigate = navigation(loadedData.recipesLength)
           render(data);
           renderNavigation(navigate);
           console.log("diary server");
@@ -15,8 +16,8 @@ const  Search = function(startindex=0){
     }
         else if ($("#gluten").prop("checked") && !$("#diary").prop("checked")) {
             $.get(`/Recipes/${ingredient}?gluten=true&startindex=${startindex}`).then((loadedData) => {
-              let data = loadData(loadedData);
-              let navigate = navigation(data)
+              let data = loadData(loadedData.recipes);
+              let navigate = navigation(loadedData.recipesLength)
               render(data);
               renderNavigation(navigate);
               console.log("glutin server");
@@ -24,8 +25,8 @@ const  Search = function(startindex=0){
         }
         else if ($("#gluten").prop("checked") && $("#diary").prop("checked")) {
             $.get(`/Recipes/${ingredient}?diary=true&gluten=true&startindex=${startindex}`).then((loadedData) => {
-              let data = loadData(loadedData);
-              let navigate = navigation(data)
+              let data = loadData(loadedData.recipes);
+              let navigate = navigation(loadedData.recipesLength)
               render(data);
               renderNavigation(navigate);
               console.log("glutin and diary server");
@@ -33,8 +34,8 @@ const  Search = function(startindex=0){
         }
         else {
             $.get(`/Recipes/${ingredient}?startindex=${startindex}`).then((loadedData) => {
-              let data = loadData(loadedData);
-              let navigate = navigation(data)
+              let data = loadData(loadedData.recipes);
+              let navigate = navigation(loadedData.recipesLength)
               render(data);
               renderNavigation(navigate);
               console.log("recipes server");
@@ -65,9 +66,9 @@ const loadData = function(loadData){
       Search(index)
     }
 
-    const navigation = function(recipes){
+    const navigation = function(recipesLength){
       let navigationArr = []
-      let len = recipes.length;
+      let len = recipesLength;
       let naviNum = 1
       while(len >= 4){
         navigationArr.push(naviNum++) 

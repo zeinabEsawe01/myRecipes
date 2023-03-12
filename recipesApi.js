@@ -11,7 +11,7 @@ router.get('/Recipes/:ingredient', (req, res) => {
   const ingredient = req.params.ingredient;
   const diary = req.query.diary;
   const gluten = req.query.gluten;
-  const startindex = req.query.index;
+  const startindex = req.query.startindex;
 
   let returnRecipes = [];
   if(diary){
@@ -20,6 +20,7 @@ router.get('/Recipes/:ingredient', (req, res) => {
   if(gluten){
     returnRecipes.push(...glutenIngredients)
   }
+  console.log(startindex);
   axios
       .get(
         `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`
@@ -27,8 +28,12 @@ router.get('/Recipes/:ingredient', (req, res) => {
       .then((result) => {
         recipes = result.data.results;
         finalResults = filterRecipes(recipes,returnRecipes)
-          res.send(finalResults.splice(startindex,4));
-        
+        let recipesLength = finalResults.length;
+        resultObj ={
+          recipes: finalResults.splice(startindex,4),
+          recipesLength: recipesLength
+        }
+          res.send(resultObj);
       });
   
 
