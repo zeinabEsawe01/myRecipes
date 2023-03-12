@@ -1,11 +1,11 @@
 
+const itemsPerPage = 4;
 
-const  Search = function(){
+const  Search = function(startindex=0){
     let ingredient = $("#ingredient").val()
 
-
     if ($("#diary").prop("checked") && !$("#gluten").prop("checked")) {
-        $.get(`/Recipes/${ingredient}?diary=true`).then((loadedData) => {
+        $.get(`/Recipes/${ingredient}?diary=true&startindex=${startindex}`).then((loadedData) => {
           let data = loadData(loadedData);
           let navigate = navigation(data)
           render(data);
@@ -14,7 +14,7 @@ const  Search = function(){
         })
     }
         else if ($("#gluten").prop("checked") && !$("#diary").prop("checked")) {
-            $.get(`/gluten/${ingredient}?gluten=true&&startIndex=${startIndex}`).then((loadedData) => {
+            $.get(`/Recipes/${ingredient}?gluten=true&startindex=${startindex}`).then((loadedData) => {
               let data = loadData(loadedData);
               let navigate = navigation(data)
               render(data);
@@ -23,7 +23,7 @@ const  Search = function(){
             });
         }
         else if ($("#gluten").prop("checked") && $("#diary").prop("checked")) {
-            $.get(`/DiaryGluten/${ingredient}?diary=true&gluten=true`).then((loadedData) => {
+            $.get(`/Recipes/${ingredient}?diary=true&gluten=true&startindex=${startindex}`).then((loadedData) => {
               let data = loadData(loadedData);
               let navigate = navigation(data)
               render(data);
@@ -32,7 +32,7 @@ const  Search = function(){
             });
         }
         else {
-            $.get(`/Recipes/${ingredient}`).then((loadedData) => {
+            $.get(`/Recipes/${ingredient}?startindex=${startindex}`).then((loadedData) => {
               let data = loadData(loadedData);
               let navigate = navigation(data)
               render(data);
@@ -61,8 +61,8 @@ const loadData = function(loadData){
 
 
     const pagination = function(num){
-      index = (num *4) - 4
-      console.log(index);
+      index = (num *itemsPerPage) - itemsPerPage
+      Search(index)
     }
 
     const navigation = function(recipes){

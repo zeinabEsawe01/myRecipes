@@ -11,35 +11,29 @@ router.get('/Recipes/:ingredient', (req, res) => {
   const ingredient = req.params.ingredient;
   const diary = req.query.diary;
   const gluten = req.query.gluten;
-  const index = req.query.index;
+  const startindex = req.query.index;
 
+  let returnRecipes = [];
+  if(diary){
+    returnRecipes.push(...dairyIngredients)
+  }
+  if(gluten){
+    returnRecipes.push(...glutenIngredients)
+  }
   axios
       .get(
         `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${ingredient}`
       )
       .then((result) => {
         recipes = result.data.results;
-        if(diary && gluten){
-          let concatSensitive = dairyIngredients.concat(glutenIngredients);
-          let recipesWithOutGlutenDiary = filterRecipes(recipes, concatSensitive);
-          res.send(recipesWithOutGlutenDiary);
-        }
-        else if(diary){
-          let recipesWithOutDairy = filterRecipes(recipes, dairyIngredients);
-          res.send(recipesWithOutDairy);
-        }
-        else if(gluten){
-          let recipesWithOutGluten = filterRecipes(recipes, glutenIngredients);
-          res.send(recipesWithOutGluten);
-        }
-        else{
-          res.send(recipes);
-        }
+        finalResults = filterRecipes(recipes,returnRecipes)
+          res.send(finalResults.splice(startindex,4));
+        
       });
   
 
   console.log( ingredient + " " + diary + " " + gluten + " " );
-
+  console.log(returnRecipes);
   
 })
 
